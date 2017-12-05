@@ -1,0 +1,13 @@
+{
+    "manifest_version": 2,
+    "name": "subtle text",
+    "description": "perform subtle text manipulations on browers content",
+    "version": "0.0.1",
+    "content_scripts": [
+        {
+            "matches": ["*://*/*"],
+            "js": ["subtle.js"],
+            "run_at":"document_end"
+        }
+    ]
+}
