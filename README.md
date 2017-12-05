@@ -7,7 +7,11 @@ of changes that will make them wonder if they're seeing things.
 It works in vanilla javascript to avoid pulling down any large libraries.
 
 It will provide a couple of configurable modes including --
+
     * random letter duplication
+
     * random word duplication
+
     * increased spelling errors
+
     * more ???
