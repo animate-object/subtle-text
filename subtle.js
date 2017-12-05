@@ -39,7 +39,7 @@ weight_bounded_random = (n, weight) => {
     count = 0;
     for (i = 0; i < num_randoms; i++) { 
         sum_randoms = sum_randoms + Math.random();
-        if (sum_randoms < n/bound) { count = count + 1; }
+        if (sum_randoms < bound) { count = count + 1; }
     }
     return Math.floor(count);
 }
