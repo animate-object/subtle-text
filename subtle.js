@@ -12,6 +12,7 @@ main = (manipulator) => {
                 }
             }
         } catch (ex) {
+            console.log(ex);
             console.log("failed to parse");
             console.log(element);
         }
@@ -44,25 +45,45 @@ weight_bounded_random = (n, weight) => {
     return Math.floor(count);
 }
 
+const end_punctuation = ['.',',','?','!',')',']', '}']
+const start_punctuation = ['(', '[', '[']
 
 random_word_additions = (text) => {
     console.log("running random word additions");
     const words = text.split(" ");
     const addition_count = weight_bounded_random(words.length, 100);
     const addition_indices = n_random_in_range(addition_count, words.length);
-    if (addition_indices.length > 0) {
-        console.log(addition_indices);
-        console.log(text);
-    } else {
+    if (addition_indices.length === 0) {
         return null;
+    } else {
+    //    console.log(addition_indices);
+    //    console.log(text);
     }
-
     copy = [];
     for (i = 0; i < words.length; i++) {
-        copy.push(words[i]);
+        const word = words[i];
         if (addition_indices.includes(i)) {
+            let to_push = "";
+            let repeat = "";
+            console.log(text);
+            console.log(i);
+            console.log("doubling " + word);
+            const first_p = start_punctuation.includes(word[0]);
+            const last_p = end_punctuation.includes(word[word.length - 1]);
+            if (first_p || last_p) { console.log("doing punctuatoin stuff"); }
+            if (first_p && last_p) { 
+                repeat = word.slice(1, word.length -1);
+                to_push = word[0] + repeat + " " + repeat + word[word.length -1];
+            } else if (first_p) {
+                repeat = word.slice(1);
+                to_push = word[0] + repeat + " " + repeat;
+            } else if (last_p) {
+                repeat = word.slice(0, word.length -1);
+                to_push = repeat + " " + repeat + word[word.length -1];
+            } else { to_push = word + " " + word; }
+            copy.push(to_push);
+        } else {
             copy.push(words[i]);
-            // probably need to check for punctuation in this block and handle appropriately
         }
     }
 
