@@ -2,7 +2,7 @@ main = (manipulator) => {
     let elements = document.body.getElementsByTagName('*');
     for (const element of elements) {
         try {
-            if (["SCRIPT", "STYLE"].includes(element.tagName)) { continue }
+            if (["SCRIPT", "STYLE", "IMG"].includes(element.tagName)) { continue }
             for (const child of element.childNodes) {
                 if (child.nodeType === 3 && child.nodeValue !== null && child.nodeValue !== undefined) {
                     manipulated = manipulator(child.nodeValue);
@@ -30,8 +30,8 @@ n_random_in_range = (n, range) => {
 }
 
 
-weight_bounded_random = (n, weight) => {
-    // generates a random number between 0 and ceil(n/weight)  s.t.
+how_many_words_to_double = (n, weight) => {
+    // generates a number between 0 and ceil(n/weight)  s.t.
     // n = 1, weight = 100 has a 1 % chance to return 1, 
     // n = 101, weight = 100 has a 100% chance to return at least 1 and a 1% chance to return 2
     sum_randoms = 0;
@@ -51,27 +51,20 @@ const start_punctuation = ['(', '[', '[']
 random_word_additions = (text) => {
     console.log("running random word additions");
     const words = text.split(" ");
-    const addition_count = weight_bounded_random(words.length, 100);
+    const addition_count = how_many_words_to_double(words.length, 100);
     const addition_indices = n_random_in_range(addition_count, words.length);
     if (addition_indices.length === 0) {
         return null;
-    } else {
-    //    console.log(addition_indices);
-    //    console.log(text);
-    }
     copy = [];
     for (i = 0; i < words.length; i++) {
         const word = words[i];
         if (addition_indices.includes(i)) {
             let to_push = "";
             let repeat = "";
-            console.log(text);
-            console.log(i);
-            console.log("doubling " + word);
-            const first_p = start_punctuation.includes(word[0]);
+            const first_p = start_punctuation.includes(word[0]);            
             const last_p = end_punctuation.includes(word[word.length - 1]);
-            if (first_p || last_p) { console.log("doing punctuatoin stuff"); }
-            if (first_p && last_p) { 
+            if (word.length === 1) { to_push = word + " " + word } 
+            else if (first_p && last_p) { 
                 repeat = word.slice(1, word.length -1);
                 to_push = word[0] + repeat + " " + repeat + word[word.length -1];
             } else if (first_p) {
@@ -108,5 +101,27 @@ random_letter_additions = (text) => {
     return copy;
 }
 
-main(random_word_additions);
+
+const bracket_subs = '"\'`<([{}])>'
+const terminator_subs = '.,;:????!!!'
+const misc_subs = '@#$%^&*~i-=+\\/|'
+const all_subs = bracket_subs + terminator_subs + misc_subs
+
+random_from = (str) => {
+    return str[Math.floor(Math.random() * str.length)]
+}
+
+punctuation_substitutor = (text) => {
+    rt = .1 // replace threshold
+    copy = ""
+    for (i = 0; i < text.length, i++) {
+        if (bracket_subs.indexOf(text[i]) !== -1) { copy = copy + (Math.random() < rt) ? random_from(bracket_subs) : text[i] }
+        else if (terminator_subs.indexOf(text[i]) !== -1) { copy = copy + (Math.random() < rt) ? random_from(terminator_subs) : text[i] }
+        else if (misc_subs.indexOf(text[i]) !== -1 ) { copy = copy + (Math.random() < rt) ? random_from(misc_subs) : text[i] }
+        else { Math.random() < .001 ? random_from(all_subs) : text[i]  }
+    }
+    return copy;
+}
+
+main(punctuation_substitutor);
 
