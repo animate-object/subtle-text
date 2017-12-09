@@ -19,6 +19,9 @@ main = (manipulator) => {
     }
 }
 
+
+// --------------------- random util functions --------------------------
+
 random_in_range = (range) => { return Math.floor(Math.random() * range); } 
 
 n_random_in_range = (n, range) => {
@@ -29,6 +32,8 @@ n_random_in_range = (n, range) => {
     return n_random;
 }
 
+
+// ---------------------- word swapper --------------------------
 
 how_many_words_to_double = (n, weight) => {
     // generates a number between 0 and ceil(n/weight)  s.t.
@@ -53,8 +58,7 @@ random_word_additions = (text) => {
     const words = text.split(" ");
     const addition_count = how_many_words_to_double(words.length, 100);
     const addition_indices = n_random_in_range(addition_count, words.length);
-    if (addition_indices.length === 0) {
-        return null;
+    if (addition_indices.length === 0) { return null; }
     copy = [];
     for (i = 0; i < words.length; i++) {
         const word = words[i];
@@ -101,24 +105,30 @@ random_letter_additions = (text) => {
     return copy;
 }
 
+// ------------------- punctuation swapper ------------------------
 
-const bracket_subs = '"\'`<([{}])>'
-const terminator_subs = '.,;:????!!!'
-const misc_subs = '@#$%^&*~i-=+\\/|'
-const all_subs = bracket_subs + terminator_subs + misc_subs
+const bracket_subs = '"\'`<([{}])>';
+const terminator_subs = '.,;:????!!!';
+const misc_subs = '@#$%^&*~i-=+\\/|';
+const all_subs = bracket_subs + terminator_subs + misc_subs;
 
 random_from = (str) => {
-    return str[Math.floor(Math.random() * str.length)]
+    return str[Math.floor(Math.random() * str.length)];
 }
 
 punctuation_substitutor = (text) => {
-    rt = .1 // replace threshold
-    copy = ""
-    for (i = 0; i < text.length, i++) {
-        if (bracket_subs.indexOf(text[i]) !== -1) { copy = copy + (Math.random() < rt) ? random_from(bracket_subs) : text[i] }
-        else if (terminator_subs.indexOf(text[i]) !== -1) { copy = copy + (Math.random() < rt) ? random_from(terminator_subs) : text[i] }
-        else if (misc_subs.indexOf(text[i]) !== -1 ) { copy = copy + (Math.random() < rt) ? random_from(misc_subs) : text[i] }
-        else { Math.random() < .001 ? random_from(all_subs) : text[i]  }
+    const rt = .1; // replace threshold
+    let copy = "";
+    for (i = 0; i < text.length; i++) {
+        if (bracket_subs.indexOf(text[i]) !== -1) { 
+            copy = copy + (Math.random() < rt) ? random_from(bracket_subs) : text[i]; 
+        } else if (terminator_subs.indexOf(text[i]) !== -1) {
+            copy = copy + (Math.random() < rt) ? random_from(terminator_subs) : text[i]; 
+        } else if (misc_subs.indexOf(text[i]) !== -1 ) {
+            copy = copy + (Math.random() < rt) ? random_from(misc_subs) : text[i];
+        } else {
+            (Math.random() < .001) ? random_from(all_subs) : text[i];
+        }
     }
     return copy;
 }
