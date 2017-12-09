@@ -1,4 +1,4 @@
-main = (manipulator) => {
+alter_page = (manipulator) => {
     let elements = document.body.getElementsByTagName('*');
     for (const element of elements) {
         try {
@@ -109,29 +109,41 @@ random_letter_additions = (text) => {
 
 const bracket_subs = '"\'`<([{}])>';
 const terminator_subs = '.,;:????!!!';
-const misc_subs = '@#$%^&*~i-=+\\/|';
+const misc_subs = '@#$%^&*~-=+\\/|';
 const all_subs = bracket_subs + terminator_subs + misc_subs;
 
-random_from = (str) => {
-    return str[Math.floor(Math.random() * str.length)];
+random_from = (collection) => {
+    return collection[Math.floor(Math.random() * collection.length)];
 }
 
 punctuation_substitutor = (text) => {
     const rt = .1; // replace threshold
     let copy = "";
     for (i = 0; i < text.length; i++) {
-        if (bracket_subs.indexOf(text[i]) !== -1) { 
-            copy = copy + (Math.random() < rt) ? random_from(bracket_subs) : text[i]; 
-        } else if (terminator_subs.indexOf(text[i]) !== -1) {
-            copy = copy + (Math.random() < rt) ? random_from(terminator_subs) : text[i]; 
-        } else if (misc_subs.indexOf(text[i]) !== -1 ) {
-            copy = copy + (Math.random() < rt) ? random_from(misc_subs) : text[i];
+        c = text[i]
+        if (bracket_subs.indexOf(c) !== -1) { 
+            copy = copy + ((Math.random() < rt) ? random_from(bracket_subs) : c); 
+        } else if (terminator_subs.indexOf(c) !== -1) {
+            copy = copy + ((Math.random() < rt) ? random_from(terminator_subs) : c); 
+        } else if (misc_subs.indexOf(c) !== -1 ) {
+            copy = copy + ((Math.random() < rt) ? random_from(misc_subs) : c);
+        } else if (Math.random() < 0.00001) {
+            ins = random_from(all_subs);
+            copy = copy + random_from([c + ins, ins + c, ins]);
         } else {
-            (Math.random() < .001) ? random_from(all_subs) : text[i];
+            copy = copy + c
         }
     }
     return copy;
 }
 
-main(punctuation_substitutor);
+manipulators = [punctuation_substitutor, random_letter_additions, random_word_additions]
 
+main = () => {
+    chrome.runtime.onMessage.addListener(request, sender, sendResponse) {
+        m = manipulators[request.m_index];
+        alter_page(m);
+    }
+}
+
+main();
