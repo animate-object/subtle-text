@@ -139,11 +139,10 @@ punctuation_substitutor = (text) => {
 
 manipulators = [punctuation_substitutor, random_letter_additions, random_word_additions]
 
-main = () => {
-    chrome.runtime.onMessage.addListener(request, sender, sendResponse) {
-        m = manipulators[request.m_index];
-        alter_page(m);
-    }
-}
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    console.log("script kicked off");
+    console.log(request);
+    m = manipulators[request['mode']];
+    alter_page(m);
+});
 
-main();
